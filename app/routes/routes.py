@@ -39,7 +39,7 @@ async def spell_suggest(
         name = request.name
         country = request.country 
         
-        suggested_names = spell_check(name, country)
+        suggested_names = await spell_check(name, country)
         
         return Response(
             status="Ok",

@@ -18,10 +18,12 @@ class SpellCheck():
         country not found
         """
         target_metaphone = jellyfish.metaphone(name)
-        session = self.Session()
+
+        from app.services.db_interaction import DB_service
+        db_obj = DB_service()
         
         try:
-            query = session.query(NameArchieve.name).join(Metaphone).filter(
+            query = db_obj.db.query(NameArchieve.name).join(Metaphone).filter(
                 Metaphone.metaphone == target_metaphone
             )
             
@@ -33,7 +35,7 @@ class SpellCheck():
         except Exception as e:
             return []
         finally:
-            session.close()
+             db_obj.db.close()
 
 
     def get_closest_matches(self, name: str, candidates: List[str]) -> Tuple[List[Tuple[str, int]], bool]:

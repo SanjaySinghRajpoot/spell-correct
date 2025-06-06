@@ -7,7 +7,7 @@ from app.models import models
 async def spell_check(name: str, country: str) -> list[str]:
     try: 
 
-        spell_correct_obj = SpellCheck
+        spell_correct_obj = SpellCheck()
 
         # Step1: get_phonetic_candidates
         phonetic_candidates = spell_correct_obj.get_phonetic_candidates(name, country)
@@ -17,7 +17,7 @@ async def spell_check(name: str, country: str) -> list[str]:
 
         # Step3: if not a is_good_match then call the LLM
         if not is_good_match:
-            return LLM_process(name, country)
+            return await LLM_process(name, country)
         
         return matches
     
@@ -29,7 +29,7 @@ async def spell_check(name: str, country: str) -> list[str]:
 
 async def LLM_process(word: str, country: str) -> str:
     try: 
-        res = await LLM_call()
+        res = await LLM_call(word)
         if res:
             return res.get("response")
         
