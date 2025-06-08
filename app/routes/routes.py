@@ -37,7 +37,7 @@ async def spell_suggest(
     """
     try:
         name = request.name
-        country = request.country 
+        country = request.country if request.country else None
         
         suggested_names = await spell_check(name, country)
         

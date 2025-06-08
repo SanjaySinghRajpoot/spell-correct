@@ -6,7 +6,7 @@ T = TypeVar('T')
 
 class CorrectionRequest(BaseModel):
     name: str
-    country: str
+    country: str = None
 
 class Response(GenericModel, Generic[T]):
     code: str

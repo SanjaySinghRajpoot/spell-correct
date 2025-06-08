@@ -51,3 +51,13 @@ class DB_service():
         except Exception as e:
             print(f"Error saving data: {e}")
             return None
+        
+    def save_metadata(name, country, matches):
+        try: 
+            pass
+
+
+        except Exception as e:
+            print(f"Error saving data: {e}")
+            return None
+

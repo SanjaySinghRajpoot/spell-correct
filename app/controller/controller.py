@@ -19,6 +19,9 @@ async def spell_check(name: str, country: str) -> list[str]:
         if not is_good_match:
             return await LLM_process(name, country)
         
+        # Save the data and the suggested words on the database
+        
+        
         return matches
     
     except Exception as e:

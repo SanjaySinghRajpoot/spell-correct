@@ -10,7 +10,6 @@ from typing import List, Tuple
 class SpellCheck():
 
  
-    
     @lru_cache(maxsize=1000)
     def get_phonetic_candidates(self, name: str, country: str) -> List[str]:
         """
@@ -27,7 +26,7 @@ class SpellCheck():
                 Metaphone.metaphone == target_metaphone
             )
             
-            if country != "":
+            if country != None:
                 query = query.filter(NameArchieve.country == country)
             
             candidates = [row[0] for row in query.all()]
