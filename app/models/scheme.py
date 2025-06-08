@@ -13,3 +13,24 @@ class Response(GenericModel, Generic[T]):
     status: str
     message: str
     result: Optional[T]
+
+class ScoreBreakdown(BaseModel):
+    phonetic: float
+    edit_distance: float
+    jaro_winkler: float
+
+class NameSuggestion(BaseModel):
+    name: str
+    similarity_score: float
+    score_breakdown: ScoreBreakdown
+
+class NameSuggestionSimple(BaseModel):
+    name: str
+    similarity_score: float
+
+class NameSuggestionsResponse(BaseModel):
+    suggestions: List[NameSuggestion]
+    
+class NameSuggestionsSimpleResponse(BaseModel):
+    suggestions: List[NameSuggestionSimple]
+

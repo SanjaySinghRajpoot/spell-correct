@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Path, Request
-from fastapi import Depends
+from fastapi import Depends, BackgroundTasks
 from app.db_config import SessionLocal
 from app.controller.controller import spell_check
 from sqlalchemy.orm import Session
@@ -30,16 +30,14 @@ def read_root():
 @router.post("/name-correction")
 async def spell_suggest(
     request: CorrectionRequest,
-    db: Session = Depends(get_db),
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db)
 ):
-    """
-    
-    """
     try:
         name = request.name
         country = request.country if request.country else None
         
-        suggested_names = await spell_check(name, country)
+        suggested_names = await spell_check(name, country, background_tasks)
         
         return Response(
             status="Ok",

@@ -1,45 +1,45 @@
-from app.services.llm_service import LLM_call
+from app.services.db_interaction import DB_service
+from app.services.llm_service import LLM_call, LLM_process
 from app.services.spell_checker_service import SpellCheck
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
+from fastapi import HTTPException, BackgroundTasks
 from app.models import models
 
-async def spell_check(name: str, country: str) -> list[str]:
+async def spell_check(name: str, country: str, background_tasks: BackgroundTasks) -> list[str]:
     try: 
-
         spell_correct_obj = SpellCheck()
 
-        # Step1: get_phonetic_candidates
-        phonetic_candidates = spell_correct_obj.get_phonetic_candidates(name, country)
+        # Check of the name is already searched before
+        is_exist, response = spell_correct_obj.name_exist_check(name, country)
+        if is_exist:
+            return response
 
-        # Step2: get_closest_matches
-        matches, is_good_match  = spell_correct_obj.get_closest_matches(name, phonetic_candidates)
+        # Step 1: get suggestions
+        suggestions = spell_correct_obj.get_suggestions(name, country)
 
-        # Step3: if not a is_good_match then call the LLM
-        if not is_good_match:
-            return await LLM_process(name, country)
+        # Step 2: check if this a good suggestion for not
+        match_check = spell_correct_obj.evaluate_suggestions(suggestions)
+
+        if not match_check.get("is_good_match"):
+            suggestions = await LLM_process(name, country)
+
+        background_tasks.add_task(
+            save_name_metadata_background,
+            name=name,
+            country=country,
+            suggestions=suggestions
+        )
         
-        # Save the data and the suggested words on the database
-        
-        
-        return matches
+        return suggestions
     
     except Exception as e:
         raise HTTPException(
             status_code=500,
             detail=f"Error processing: {str(e)}"
         )
+    
 
-async def LLM_process(word: str, country: str) -> str:
-    try: 
-        res = await LLM_call(word)
-        if res:
-            return res.get("response")
-        
-        return "something went wrong while processing LLM process."
-           
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error processing products: {str(e)}"
-        )
+def save_name_metadata_background(name: str, country: str, suggestions: list[str]):
+    """Background task function for saving to DB"""
+    db_obj = DB_service()
+    db_obj.save_name_metadata(name=name, country=country, suggestions=suggestions)
