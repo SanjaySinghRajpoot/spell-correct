@@ -4,6 +4,7 @@ from app.services.spell_checker_service import SpellCheck
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, BackgroundTasks
 from app.models import models
+from app.utils.utils import save_name_metadata_background
 
 async def spell_check(name: str, country: str, background_tasks: BackgroundTasks) -> list[str]:
     try: 
@@ -20,6 +21,7 @@ async def spell_check(name: str, country: str, background_tasks: BackgroundTasks
         # Step 2: check if this a good suggestion for not
         match_check = spell_correct_obj.evaluate_suggestions(suggestions)
 
+        # Step 3: if not a good match then use the LLM call
         if not match_check.get("is_good_match"):
             suggestions = await LLM_process(name, country)
 
@@ -39,7 +41,3 @@ async def spell_check(name: str, country: str, background_tasks: BackgroundTasks
         )
     
 
-def save_name_metadata_background(name: str, country: str, suggestions: list[str]):
-    """Background task function for saving to DB"""
-    db_obj = DB_service()
-    db_obj.save_name_metadata(name=name, country=country, suggestions=suggestions)
