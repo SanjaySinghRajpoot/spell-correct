@@ -15,7 +15,7 @@ async def spell_check(name: str, country: str, background_tasks: BackgroundTasks
         if is_exist:
             return response
 
-        # Step 1: get suggestions
+        # Step 1: get suggestions based on the metaphones
         suggestions = spell_correct_obj.get_suggestions(name, country)
 
         # Step 2: check if this a good suggestion for not
