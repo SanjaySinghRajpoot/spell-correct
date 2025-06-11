@@ -30,9 +30,10 @@ Guidelines:
 - Provide 1-3 most likely corrections, ranked by similarity score
 - Similarity scores should range from 0.0 (no match) to 1.0 (perfect match)
 - Consider common misspellings, phonetic variations, and cultural name variants specific to the given country
-- Take into account naming conventions and common names from the specified country/culture
+- Take into account naming conventions and common names from the specified country/culture if no country is specified then consider Scandinavian countries
 - If the input name appears correct, return it with a high similarity score
 - Maintain strict JSON formatting - no additional text outside the tags
+- Only consider names with similarity_score more than 0.85
 
 Example:
 Input: "Jhon Smyth" (Country: United States)

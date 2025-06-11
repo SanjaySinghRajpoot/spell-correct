@@ -3,16 +3,15 @@ from app.models import models
 from app.models.models import CorrectedNames, InputNames, NameArchieve, Metaphone 
 import jellyfish
 from pathlib import Path
+from sqlalchemy.orm import Session
 
 COUNTRIES = ["Denmark", "Finland", "Iceland", "Norway", "Sweden"]
 
 
 class DB_service():
 
-    def __init__(self):
-        from app.routes.routes import get_db
-        db_gen = get_db()
-        self.db = next(db_gen)
+    def __init__(self, db_session: Session):
+        self.db = db_session
         
     def initialize_database(self):
         """Using bulk insert operations for maximum performance"""

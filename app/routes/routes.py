@@ -2,9 +2,9 @@ from fastapi import APIRouter, HTTPException, Path, Request
 from fastapi import Depends, BackgroundTasks
 from app.db_config import SessionLocal
 from app.controller.controller import spell_check
-from sqlalchemy.orm import Session
 from app.models.scheme import CorrectionRequest, Response
 from app.services.db_interaction import DB_service
+from sqlalchemy.orm import Session
 
 
 router = APIRouter()
@@ -31,12 +31,13 @@ def read_root():
 async def spell_suggest(
     request: CorrectionRequest,
     background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db)
 ):
     try:
         name = request.name
         country = request.country if request.country else None
         
-        suggested_names = await spell_check(name, country, background_tasks)
+        suggested_names = await spell_check(name, country, db, background_tasks)
         
         return Response(
             status="Ok",

@@ -7,9 +7,9 @@ from fastapi import HTTPException, BackgroundTasks
 from app.models import models
 from app.utils.utils import save_name_metadata_background
 
-async def spell_check(name: str, country: str, background_tasks: BackgroundTasks) -> SpellCheckResponse:
+async def spell_check(name: str, country: str, db: Session, background_tasks: BackgroundTasks) -> SpellCheckResponse:
     try:
-        spell_correct_obj = SpellCheck()
+        spell_correct_obj = SpellCheck(db_session=db)
 
         # Existency Check: Check if the name is already searched before
         is_exist, response_suggestions = spell_correct_obj.name_exist_check(name, country)
@@ -32,7 +32,8 @@ async def spell_check(name: str, country: str, background_tasks: BackgroundTasks
             save_name_metadata_background,
             name=name,
             country=country,
-            suggestions=[s.model_dump() for s in suggestions] # Convert Pydantic models to dict for background task
+            db_sesion=db,
+            suggestions=[s.model_dump() for s in suggestions]
         )
 
         return SpellCheckResponse(suggestions=suggestions)

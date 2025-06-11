@@ -6,7 +6,7 @@ from app.models.models import CorrectedNames, InputNames, NameArchieve, Metaphon
 from functools import lru_cache
 import jellyfish
 from typing import List, Optional, Tuple, Union
-
+from sqlalchemy.orm import Session
 from typing import List, Tuple, Dict
 import jellyfish
 from functools import lru_cache
@@ -50,16 +50,15 @@ from app.services.db_interaction import COUNTRIES
 # --- SpellCheck Class ---
 
 class SpellCheck:
-    def __init__(self):
+    def __init__(self, db_session: Session):
         self.THRESHOLD = 2
         self.MAX_DISTANCE = 3
         self.PHONETIC_WEIGHT = 0.4
         self.EDIT_DISTANCE_WEIGHT = 0.3
         self.JARO_WINKLER_WEIGHT = 0.3
 
-        # remove this from here
         from app.services.db_interaction import DB_service
-        self.db_obj = DB_service()
+        self.db_obj = DB_service(db_session)
 
     @lru_cache(maxsize=1000)
     def get_phonetic_candidates(self, name: str, country: Optional[str] = None) -> List[str]:
