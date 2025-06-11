@@ -31,7 +31,6 @@ def read_root():
 async def spell_suggest(
     request: CorrectionRequest,
     background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db)
 ):
     try:
         name = request.name

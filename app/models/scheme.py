@@ -19,18 +19,15 @@ class ScoreBreakdown(BaseModel):
     edit_distance: float
     jaro_winkler: float
 
-class NameSuggestion(BaseModel):
-    name: str
-    similarity_score: float
-    score_breakdown: ScoreBreakdown
-
-class NameSuggestionSimple(BaseModel):
+class Suggestion(BaseModel):
     name: str
     similarity_score: float
 
-class NameSuggestionsResponse(BaseModel):
-    suggestions: List[NameSuggestion]
-    
-class NameSuggestionsSimpleResponse(BaseModel):
-    suggestions: List[NameSuggestionSimple]
+class SpellCheckResponse(BaseModel):
+    suggestions: List[Suggestion] = Field(..., description="List of spelling suggestions with similarity scores.")
+
+class EvaluationResponse(BaseModel):
+    is_good_match: bool
+    filtered_suggestions: List[Suggestion] = Field(..., description="Suggestions that meet the evaluation criteria.")
+
 
