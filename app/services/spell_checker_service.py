@@ -228,9 +228,6 @@ class SpellCheck:
             return True, suggestions
 
         except Exception as e:
-            # Log the error here
             return False, []
-        finally:
-            self.db_obj.db.close()
    
 
