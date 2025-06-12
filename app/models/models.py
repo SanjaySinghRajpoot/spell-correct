@@ -36,6 +36,7 @@ class InputNames(Base):
     __tablename__ = 'input_names'
     
     id = Column(Integer, primary_key=True)
+    
     name = Column(String, nullable=False)
     country = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
