@@ -9,6 +9,28 @@ A FastAPI-based service for name spell correction and suggestions.
 - **RESTful API**: Simple API endpoints for integration into other applications
 - **Metadata Storage**: Tracks and stores correction requests for future reference
 
+## How It Works
+
+The spell correction process follows a multi-step approach to provide accurate name suggestions:
+
+### 1. Existence Check
+First, the system checks if the name has been previously searched and corrected for the given country. If found, it returns the cached suggestions immediately.
+
+### 2. Metaphone-Based Suggestions
+If not cached, the system generates suggestions using phonetic algorithms (metaphones) that match names with similar pronunciation patterns, filtered by country context.
+
+### 3. Quality Evaluation
+The generated suggestions are evaluated for quality using various criteria such as:
+- Similarity scores
+- Common name patterns
+- Country-specific name validity
+
+### 4. LLM Enhancement
+If the initial suggestions don't meet quality thresholds, the system calls a Large Language Model (LLM) to generate more contextually appropriate corrections based on the name and country.
+
+### 5. Background Processing
+All correction requests and their results are saved asynchronously in the background for future reference and system improvement.
+
 ## Project Structure
 
 ```
