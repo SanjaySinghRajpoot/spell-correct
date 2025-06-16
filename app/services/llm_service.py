@@ -3,6 +3,7 @@ from typing import Dict, List, Optional, Union
 import requests
 import json
 from app.models import models 
+import os
 
 prompt = """You are a name spelling checker and corrector. Your task is to analyze input names and provide corrected spellings with confidence scores.
 
@@ -214,8 +215,9 @@ async def LLM_call(word: str, country: str):
 
         formatted_prompt = prompt.format(name=word, country=country)
 
+        gemini_api_key = os.getenv("gemini_api_key")
 
-        result = get_gemini_response("AIzaSyDVaGGVPpV5QCPh4fuoK-ILZxbUuEMnCcc", formatted_prompt)
+        result = get_gemini_response(gemini_api_key, formatted_prompt)
         if result:
             print("Response:", result["response"])
             print("Citations:", result["citation"])
